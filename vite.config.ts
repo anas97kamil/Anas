@@ -6,8 +6,6 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, (process as any).cwd(), '');
   
   return {
-    // جعل المجلد الرئيسي هو مجلد الملفات العامة
-    publicDir: '.', 
     plugins: [react()],
     define: {
       'process.env.API_KEY': JSON.stringify(env.API_KEY)
