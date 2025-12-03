@@ -1,20 +1,36 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface LogoProps {
   className?: string;
-  customSrc?: string | null;
 }
 
-export const Logo: React.FC<LogoProps> = ({ className, customSrc }) => {
-  return (
-    <div className={`active:scale-95 transition-transform duration-200 ease-out cursor-pointer select-none ${className}`}>
-      {customSrc ? (
-        <img 
-          src={customSrc} 
-          alt="شعار المتجر" 
-          className="w-full h-full object-contain drop-shadow-xl rounded-full"
-        />
-      ) : (
+export const Logo: React.FC<LogoProps> = ({ className }) => {
+  const [hasCustomLogo, setHasCustomLogo] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Check if logo.png exists in the root
+    const img = new Image();
+    img.src = '/logo.png';
+    
+    img.onload = () => {
+      setHasCustomLogo(true);
+      setIsLoading(false);
+    };
+    
+    img.onerror = () => {
+      setHasCustomLogo(false);
+      setIsLoading(false);
+    };
+  }, []);
+
+  const containerClasses = `active:scale-95 transition-transform duration-200 ease-out cursor-pointer select-none ${className}`;
+
+  // While checking, render nothing or the SVG to prevent flicker. 
+  // Here we render SVG initially or if no custom logo found.
+  if (isLoading || !hasCustomLogo) {
+    return (
+      <div className={containerClasses}>
         <svg
           viewBox="0 0 200 200"
           xmlns="http://www.w3.org/2000/svg"
@@ -44,7 +60,17 @@ export const Logo: React.FC<LogoProps> = ({ className, customSrc }) => {
           <path d="M126 56 A 6 6 0 0 1 130 58" stroke="rgba(255,255,255,0.2)" strokeWidth="3" fill="none" />
           <path d="M96 106 A 6 6 0 0 1 100 108" stroke="rgba(255,255,255,0.2)" strokeWidth="3" fill="none" />
         </svg>
-      )}
+      </div>
+    );
+  }
+
+  return (
+    <div className={containerClasses}>
+      <img 
+        src="/logo.png" 
+        alt="شعار المتجر" 
+        className="w-full h-full object-contain drop-shadow-xl rounded-full"
+      />
     </div>
   );
 };

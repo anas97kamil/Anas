@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { InfoBox } from './components/InfoBox';
 import { RecipeGenerator } from './components/RecipeGenerator';
@@ -8,16 +8,6 @@ import { Cookie, ChefHat, Utensils } from 'lucide-react';
 const App: React.FC = () => {
   const [clicks, setClicks] = useState<{id: number, x: number, y: number}[]>([]);
   const [scrollY, setScrollY] = useState(0);
-  
-  // Hidden upload logic
-  const [tapCount, setTapCount] = useState(0);
-  const tapTimer = useRef<any>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  
-  // Initialize state from localStorage if available
-  const [customLogo, setCustomLogo] = useState<string | null>(() => {
-    return localStorage.getItem('bakery-custom-logo');
-  });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -47,43 +37,6 @@ const App: React.FC = () => {
     setTimeout(() => {
       setClicks(prev => prev.filter(c => c.id !== id));
     }, 600);
-  };
-
-  const handleLogoTap = (e: React.MouseEvent) => {
-    // Clear existing timer
-    if (tapTimer.current) clearTimeout(tapTimer.current);
-
-    const newCount = tapCount + 1;
-    setTapCount(newCount);
-
-    if (newCount >= 10) {
-      fileInputRef.current?.click();
-      setTapCount(0);
-    } else {
-      // Reset count if no tap for 500ms (rapid tapping required)
-      tapTimer.current = setTimeout(() => {
-        setTapCount(0);
-      }, 500);
-    }
-  };
-
-  const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const result = reader.result as string;
-        setCustomLogo(result);
-        // Save to localStorage so it persists after refresh
-        try {
-          localStorage.setItem('bakery-custom-logo', result);
-        } catch (e) {
-          console.error("Image too large to save locally", e);
-          alert("الصورة كبيرة جداً للحفظ التلقائي، لكن سيتم عرضها الآن.");
-        }
-      };
-      reader.readAsDataURL(file);
-    }
   };
 
   return (
@@ -142,22 +95,9 @@ const App: React.FC = () => {
           className="flex justify-center py-4 relative"
           style={{ transform: `translateY(${scrollY * 0.1}px)` }} 
         >
-          <div 
-            className="relative group"
-            onClick={handleLogoTap}
-          >
+          <div className="relative group">
             <Logo 
-              customSrc={customLogo}
               className="w-[280px] h-[280px] md:w-[320px] md:h-[320px] drop-shadow-2xl transition-all duration-300 hover:drop-shadow-3xl" 
-            />
-            
-            {/* Hidden Input for 10-tap trigger */}
-            <input 
-              type="file" 
-              accept="image/*" 
-              className="hidden" 
-              ref={fileInputRef}
-              onChange={handleLogoUpload} 
             />
           </div>
         </div>
