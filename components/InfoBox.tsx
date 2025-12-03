@@ -13,16 +13,18 @@ export const InfoBox: React.FC = () => {
           <div className="bg-orange-100 p-4 rounded-full group-hover:bg-[#FA8072] group-hover:text-white transition-colors">
             <Phone className="w-6 h-6" />
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col items-start w-full">
             <a 
               href="tel:+963957432958" 
-              className="text-xl font-bold dir-ltr text-right hover:text-[#FA8072] transition-colors"
+              className="text-xl font-bold hover:text-[#FA8072] transition-colors"
+              style={{ direction: 'ltr', unicodeBidi: 'plaintext', textAlign: 'right' }}
             >
               +963 957 432 958
             </a>
             <a 
               href="tel:+963993986953" 
-              className="text-xl font-bold dir-ltr text-right hover:text-[#FA8072] transition-colors"
+              className="text-xl font-bold hover:text-[#FA8072] transition-colors"
+              style={{ direction: 'ltr', unicodeBidi: 'plaintext', textAlign: 'right' }}
             >
               +963 993 986 953
             </a>
